@@ -37,7 +37,6 @@ import org.skyscreamer.jsonassert.comparator.JSONComparator;
  */
 public class ArrayValueMatcherTest {
 
-	private static final String ARRAY_OF_JSONOBJECTS = "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}";
 	private static final String ARRAY_OF_INTEGERS = "{a:[1,2,3,4,5]}";
 	private static final String ARRAY_OF_JSONARRAYS = "{a:[[6,7,8],[9,10,11],[12,13,14],[19,20,21,22]]}";
 	private static final JSONComparator comparator = new DefaultComparator(JSONCompareMode.LENIENT);
@@ -62,7 +61,7 @@ public class ArrayValueMatcherTest {
 
 	@Test
 	public void matchesSecondElementOfJSONObjectArray() throws JSONException {
-		doTest("a", new ArrayValueMatcher<Object>(comparator, 1), "{a:[{background:grey,id:2,type:row}]}", ARRAY_OF_JSONOBJECTS);
+		doTest("a", new ArrayValueMatcher<Object>(comparator, 1), "{a:[{background:grey,id:2,type:row}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}");
 	}
 
 	@Test
@@ -70,7 +69,7 @@ public class ArrayValueMatcherTest {
 		doFailingMatchTest("a",
 				new ArrayValueMatcher<Object>(comparator, 1),
 				"{a:[{background:DOES_NOT_MATCH,id:2,type:row}]}",
-				ARRAY_OF_JSONOBJECTS,
+				"{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}",
 				"a\\[1\\]\\.background\\s*Expected:\\s*DOES_NOT_MATCH\\s*got:\\s*grey\\s*");
 	}
 
@@ -79,7 +78,7 @@ public class ArrayValueMatcherTest {
 		doFailingMatchTest("a",
 				new ArrayValueMatcher<Object>(comparator, 2),
 				"{a:[{background:DOES_NOT_MATCH,id:3,type:WRONG_TYPE}]}",
-				ARRAY_OF_JSONOBJECTS,
+				"{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}",
 				"a\\[2\\]\\.background\\s*Expected:\\s*DOES_NOT_MATCH\\s*got:\\s*white\\s*;\\s*a\\[2\\]\\.type\\s*Expected:\\s*WRONG_TYPE\\s*got:\\s*row\\s*");
 	}
 
@@ -88,7 +87,7 @@ public class ArrayValueMatcherTest {
 		doFailingMatchTest("a",
 				new ArrayValueMatcher<Object>(comparator, 1, 2),
 				"{a:[{background:DOES_NOT_MATCH,id:2,type:row},{background:white,id:3,type:WRONG_TYPE}]}",
-				ARRAY_OF_JSONOBJECTS,
+				"{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}",
 				"a\\[1\\]\\.background\\s*Expected:\\s*DOES_NOT_MATCH\\s*got:\\s*grey\\s*;\\s*a\\[2\\]\\.type\\s*Expected:\\s*WRONG_TYPE\\s*got:\\s*row\\s*");
 	}
 
@@ -138,7 +137,7 @@ public class ArrayValueMatcherTest {
 
 	@Test
 	public void matchesEveryElementOfJSONObjectArray() throws JSONException {
-		doTest("a", new ArrayValueMatcher<Object>(comparator), "{a:[{type:row}]}", ARRAY_OF_JSONOBJECTS);
+		doTest("a", new ArrayValueMatcher<Object>(comparator), "{a:[{type:row}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}");
 	}
 
 	@Test
@@ -146,23 +145,23 @@ public class ArrayValueMatcherTest {
 		doFailingMatchTest("a",
 				new ArrayValueMatcher<Object>(comparator),
 				"{a:[{background:white}]}",
-				ARRAY_OF_JSONOBJECTS,
+				"{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}",
 				"a\\[1\\]\\.background\\s*Expected:\\s*white\\s*got:\\s*grey\\s*;\\s*a\\[3\\]\\.background\\s*Expected:\\s*white\\s*got:\\s*grey\\s*");
 	}
 
 	@Test
 	public void matchesEveryElementOfJSONObjectArrayWhenRangeTooLarge() throws JSONException {
-		doTest("a", new ArrayValueMatcher<Object>(comparator, 0, 500), "{a:[{type:row}]}", ARRAY_OF_JSONOBJECTS);
+		doTest("a", new ArrayValueMatcher<Object>(comparator, 0, 500), "{a:[{type:row}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}");
 	}
 
 	@Test
 	public void matchesElementPairsStartingFromElement1OfJSONObjectArrayWhenRangeTooLarge() throws JSONException {
-		doTest("a", new ArrayValueMatcher<Object>(comparator, 1, 500), "{a:[{background:grey},{background:white}]}", ARRAY_OF_JSONOBJECTS);
+		doTest("a", new ArrayValueMatcher<Object>(comparator, 1, 500), "{a:[{background:grey},{background:white}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}");
 	}
 
 	@Test
 	public void matchesElementPairsStartingFromElement0OfJSONObjectArrayWhenRangeTooLarge() throws JSONException {
-		doTest("a", new ArrayValueMatcher<Object>(comparator), "{a:[{background:white},{background:grey}]}", ARRAY_OF_JSONOBJECTS);
+		doTest("a", new ArrayValueMatcher<Object>(comparator), "{a:[{background:white},{background:grey}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}");
 	}
 
 	@Test
@@ -191,7 +190,7 @@ public class ArrayValueMatcherTest {
 
 	@Test
 	public void jsonObjectMatchesSecondElementOfJSONObjectArray() throws JSONException {
-		doTest("a", new ArrayValueMatcher<Object>(comparator, 1), "{a:{background:grey,id:2,type:row}}", ARRAY_OF_JSONOBJECTS);
+		doTest("a", new ArrayValueMatcher<Object>(comparator, 1), "{a:{background:grey,id:2,type:row}}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}");
 	}
 
 	/*
@@ -201,34 +200,34 @@ public class ArrayValueMatcherTest {
 	public void verifyIdAttributeOfFirstArrayElementMatches() throws JSONException {
 		JSONComparator comparator = new DefaultComparator(JSONCompareMode.LENIENT);
 		Customization customization = new Customization("a", new ArrayValueMatcher<Object>(comparator, 0));
-		JSONAssert.assertEquals("{a:[{id:1}]}", ARRAY_OF_JSONOBJECTS, new CustomComparator(JSONCompareMode.LENIENT, customization));
+		JSONAssert.assertEquals("{a:[{id:1}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}", new CustomComparator(JSONCompareMode.LENIENT, customization));
 	}
 	
 	@Test
 	public void verifyIdAttributeOfFirstArrayElementMatchesSimplifiedExpectedSyntax() throws JSONException {
 		JSONComparator comparator = new DefaultComparator(JSONCompareMode.LENIENT);
 		Customization customization = new Customization("a", new ArrayValueMatcher<Object>(comparator, 0));
-		JSONAssert.assertEquals("{a:{id:1}}", ARRAY_OF_JSONOBJECTS, new CustomComparator(JSONCompareMode.LENIENT, customization));
+		JSONAssert.assertEquals("{a:{id:1}}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}", new CustomComparator(JSONCompareMode.LENIENT, customization));
 	}
 	
 	@Test
 	public void verifyTypeAttributeOfSecondAndThirdElementMatchesRow() throws JSONException {
 		JSONComparator comparator = new DefaultComparator(JSONCompareMode.LENIENT);
 		Customization customization = new Customization("a", new ArrayValueMatcher<Object>(comparator, 1, 2));
-		JSONAssert.assertEquals("{a:[{type:row}]}", ARRAY_OF_JSONOBJECTS, new CustomComparator(JSONCompareMode.LENIENT, customization)); 
+		JSONAssert.assertEquals("{a:[{type:row}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}", new CustomComparator(JSONCompareMode.LENIENT, customization));
 	}
 	
 	@Test
 	public void verifyTypeAttributeOfEveryArrayElementMatchesRow() throws JSONException {
 		 JSONComparator comparator = new DefaultComparator(JSONCompareMode.LENIENT);
 		 Customization customization = new Customization("a", new ArrayValueMatcher<Object>(comparator));
-		 JSONAssert.assertEquals("{a:[{type:row}]}", ARRAY_OF_JSONOBJECTS, new CustomComparator(JSONCompareMode.LENIENT, customization));
+		 JSONAssert.assertEquals("{a:[{type:row}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}", new CustomComparator(JSONCompareMode.LENIENT, customization));
 	}
 	
 	@Test
 	public void verifyEveryArrayElementWithCustomComparator() throws JSONException {
 		// get length of array we will verify
-		int aLength = ((JSONArray)((JSONObject)JSONParser.parseJSON(ARRAY_OF_JSONOBJECTS)).get("a")).length();
+		int aLength = ((JSONArray)((JSONObject)JSONParser.parseJSON("{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}")).get("a")).length();
 		// create array of customizations one for each array element
 		RegularExpressionValueMatcher<Object> regExValueMatcher = new RegularExpressionValueMatcher<Object>("\\d+");  // matches one or more digits
 		Customization[] customizations = new Customization[aLength];
@@ -241,14 +240,14 @@ public class ArrayValueMatcherTest {
 		ArrayValueMatcher<Object> regExArrayValueMatcher = new ArrayValueMatcher<Object>(regExComparator);
 		Customization regExArrayValueCustomization = new Customization("a", regExArrayValueMatcher);
 		CustomComparator regExCustomArrayValueComparator = new CustomComparator(JSONCompareMode.STRICT_ORDER, new Customization[] { regExArrayValueCustomization });
-		JSONAssert.assertEquals("{a:[{id:X}]}", ARRAY_OF_JSONOBJECTS, regExCustomArrayValueComparator);
+		JSONAssert.assertEquals("{a:[{id:X}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}", regExCustomArrayValueComparator);
 	}
 	
 	@Test
 	public void verifyBackgroundAttributesOfEveryArrayElementAlternateBetweenWhiteAndGrey() throws JSONException {
 		 JSONComparator comparator = new DefaultComparator(JSONCompareMode.LENIENT);
 		 Customization customization = new Customization("a", new ArrayValueMatcher<Object>(comparator));
-		 JSONAssert.assertEquals("{a:[{background:white},{background:grey}]}", ARRAY_OF_JSONOBJECTS, new CustomComparator(JSONCompareMode.LENIENT, customization));
+		 JSONAssert.assertEquals("{a:[{background:white},{background:grey}]}", "{a:[{background:white,id:1,type:row},{background:grey,id:2,type:row},{background:white,id:3,type:row},{background:grey,id:4,type:row}]}", new CustomComparator(JSONCompareMode.LENIENT, customization));
 	}
 	
 	@Test

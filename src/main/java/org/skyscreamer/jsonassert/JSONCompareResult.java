@@ -14,12 +14,13 @@
 
 package org.skyscreamer.jsonassert;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.skyscreamer.jsonassert.diff.viewer.DiffViewer;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Bean for holding results from JSONCompare.
@@ -48,6 +49,7 @@ public class JSONCompareResult {
 
     /**
      * Did the comparison pass?
+     *
      * @return True if it passed
      */
     public boolean passed() {
@@ -56,6 +58,7 @@ public class JSONCompareResult {
 
     /**
      * Did the comparison fail?
+     *
      * @return True if it failed
      */
     public boolean failed() {
@@ -64,30 +67,35 @@ public class JSONCompareResult {
 
     /**
      * Result message
+     *
      * @return String explaining why if the comparison failed
      */
     public String getMessage() {
-        return _message.toString();
+        String diffView = JSONAssertConfiguration.isDiffViewerEnabled() ? DiffViewer.diff(_expected, _actual) : "";
+        return _message.toString() + diffView;
     }
 
     /**
      * Get the list of failures on field comparisons
+     *
      * @return list of comparsion failures
      */
     public List<FieldComparisonFailure> getFieldFailures() {
         return Collections.unmodifiableList(_fieldFailures);
     }
-    
+
     /**
      * Get the list of missed on field comparisons
+     *
      * @return list of comparsion failures
      */
     public List<FieldComparisonFailure> getFieldMissing() {
         return Collections.unmodifiableList(_fieldMissing);
     }
-    
+
     /**
      * Get the list of failures on field comparisons
+     *
      * @return list of comparsion failures
      */
     public List<FieldComparisonFailure> getFieldUnexpected() {
@@ -96,48 +104,51 @@ public class JSONCompareResult {
 
     /**
      * Actual field value
-     * 
+     *
      * @return a {@code JSONObject}, {@code JSONArray} or other {@code Object}
-     *         instance, or {@code null} if the comparison did not fail on a
-     *         particular field
+     * instance, or {@code null} if the comparison did not fail on a
+     * particular field
      * @deprecated Superseded by {@link #getFieldFailures()}
      */
     @Deprecated
     public Object getActual() {
         return _actual;
     }
-    
+
     /**
      * Expected field value
-     * 
+     *
      * @return a {@code JSONObject}, {@code JSONArray} or other {@code Object}
-     *         instance, or {@code null} if the comparison did not fail on a
-     *         particular field
+     * instance, or {@code null} if the comparison did not fail on a
+     * particular field
      * @deprecated Superseded by {@link #getFieldFailures()}
      */
     @Deprecated
     public Object getExpected() {
         return _expected;
     }
-    
+
     /**
      * Check if comparison failed on any particular fields
+     *
      * @return true if there are field failures
      */
     public boolean isFailureOnField() {
         return !_fieldFailures.isEmpty();
     }
-    
+
     /**
      * Check if comparison failed with missing on any particular fields
+     *
      * @return true if an expected field is missing
      */
     public boolean isMissingOnField() {
         return !_fieldMissing.isEmpty();
     }
-    
+
     /**
      * Check if comparison failed with unexpected on any particular fields
+     *
      * @return true if an unexpected field is in the result
      */
     public boolean isUnexpectedOnField() {
@@ -146,16 +157,16 @@ public class JSONCompareResult {
 
     /**
      * Dot-separated path the the field that failed comparison
-     * 
+     *
      * @return a {@code String} instance, or {@code null} if the comparison did
-     *         not fail on a particular field
+     * not fail on a particular field
      * @deprecated Superseded by {@link #getFieldFailures()}
      */
     @Deprecated
     public String getField() {
         return _field;
     }
-    
+
     public void fail(String message) {
         _success = false;
         if (_message.length() == 0) {
@@ -167,9 +178,10 @@ public class JSONCompareResult {
 
     /**
      * Identify that the comparison failed
-     * @param field Which field failed
+     *
+     * @param field    Which field failed
      * @param expected Expected result
-     * @param actual Actual result
+     * @param actual   Actual result
      * @return result of comparision
      */
     public JSONCompareResult fail(String field, Object expected, Object actual) {
@@ -183,12 +195,13 @@ public class JSONCompareResult {
 
     /**
      * Identify that the comparison failed
-     * @param field Which field failed
+     *
+     * @param field     Which field failed
      * @param exception exception containing details of match failure
      * @return result of comparision
      */
     public JSONCompareResult fail(String field, ValueMatcherException exception) {
-    	fail(field + ": " + exception.getMessage(), exception.getExpected(), exception.getActual());
+        fail(field + ": " + exception.getMessage(), exception.getExpected(), exception.getActual());
         return this;
     }
 
@@ -203,12 +216,13 @@ public class JSONCompareResult {
 
     /**
      * Identify the missing field
-     * @param field missing field
+     *
+     * @param field    missing field
      * @param expected expected result
      * @return result of comparison
      */
     public JSONCompareResult missing(String field, Object expected) {
-    	_fieldMissing.add(new FieldComparisonFailure(field, expected, null));
+        _fieldMissing.add(new FieldComparisonFailure(field, expected, null));
         fail(formatMissing(field, expected));
         return this;
     }
@@ -222,12 +236,13 @@ public class JSONCompareResult {
 
     /**
      * Identify unexpected field
-     * @param field unexpected field
+     *
+     * @param field  unexpected field
      * @param actual actual result
      * @return result of comparison
      */
     public JSONCompareResult unexpected(String field, Object actual) {
-    	_fieldUnexpected.add(new FieldComparisonFailure(field, null, actual));
+        _fieldUnexpected.add(new FieldComparisonFailure(field, null, actual));
         fail(formatUnexpected(field, actual));
         return this;
     }
